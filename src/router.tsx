@@ -12,12 +12,10 @@ import { SessionZeroScreen } from './features/session-zero/SessionZeroScreen';
 import { PlaceholderScreen } from './components/PlaceholderScreen';
 
 /**
- * Hash router so the app works when opened from the filesystem and so the
- * Player View can live on a separate route/window.
+ * Hash router so the app works when opened straight from the filesystem.
  *
- * NOTE (section 13): there is intentionally NO route for Session Zero that is
- * reachable from the Player View. Session Zero lives only inside the Keeper
- * app shell and is never linked from /jogador.
+ * This is a Keeper-only, offline app: there is deliberately NO player-facing
+ * route, window or sync channel. Everything lives inside the Keeper shell.
  */
 export const router = createHashRouter([
   {
@@ -36,6 +34,4 @@ export const router = createHashRouter([
       { path: 'config', element: <PlaceholderScreen title="Configurações" phase="Fase 5" /> },
     ],
   },
-  // Player View lives on its own route/window (Fase 5).
-  { path: '/jogador', element: <PlaceholderScreen title="Visão do Jogador" phase="Fase 5" standalone /> },
 ]);

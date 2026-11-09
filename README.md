@@ -55,7 +55,7 @@ mapas, locais, NPCs, facções, tramas, pistas, uma mesa, investigadores e uma S
 Nos textos longos você pode usar blocos especiais:
 
 - `> texto` → **leitura em voz alta** (destaque serifado grande)
-- `:::segredo ... :::` → **apenas Mestre** (caixa vermelha; nunca aparece na Visão do Jogador)
+- `:::segredo ... :::` → **apenas Mestre** (caixa vermelha; fica escondido na pré-visualização "como o jogador vê" dos handouts)
 - `:::teste ... :::` → **mecânica** (ex.: "Rastrear (Difícil)")
 - `:::sanidade ... :::` → **perda de Sanidade** (ex.: "0/1d4")
 
@@ -86,14 +86,13 @@ As **regras de negócio** ficam em `src/domain/` como funções puras e testadas
 | `graph.ts` | 6.8 — grafo de conexões e matriz de cruzamentos (nós de cruzamento) |
 | `cocRules.ts` | 13 — cálculos CoC 7e (derivados, metade/quinto, pontos) |
 | `coverage.ts` | 13 — cobertura investigadores × tramas, alertas |
-| `playerView.ts` | allow-list da Visão do Jogador (nunca vaza segredo/Sessão 0) |
 
 ### Decisões
 
 - Gerenciador de pacotes: **pnpm**. Grafo: **React Flow** (planejado p/ Fase 4). Ícones: **lucide-react** (empacotado).
 - IDs via `crypto.randomUUID()`. Export/import do mundo com blobs em **base64** (Fase 5).
 - A store do Dexie para "mesas" é exposta como **`gameTables`** (o nome `tables` é reservado pelo Dexie).
-- **Sessão 0** nunca terá rota, link ou canal para a Visão do Jogador (garantido por teste na Fase 7).
+- **App exclusivo do Mestre e offline.** Por decisão de projeto, **não existe Visão do Jogador**: nenhuma rota, janela ou canal para jogadores. A única superfície voltada ao jogador é a pré-visualização "como o jogador vê" dos handouts (que esconde segredos via `hideSecrets` no renderizador de markdown).
 
 ---
 
@@ -140,11 +139,11 @@ As **regras de negócio** ficam em `src/domain/` como funções puras e testadas
 - **Vínculos com o mundo:** cada investigador liga-se a local/NPC/facção/trama; o vínculo aparece como nota **no dossiê do local e na ficha do NPC** ("ligado ao investigador X").
 - **Painel de cobertura:** matriz investigador × trama + alertas de "investigador sem vínculo" e "trama sem nenhum investigador ligado".
 - **Modo leitura** em tela cheia (local, sem sincronização) e **ficha para impressão** (HTML/PDF, sem notas do Mestre).
-- **Privacidade (crítico):** a Sessão 0 não tem rota, link nem canal para jogadores, e **nenhum dado dela entra na Visão do Jogador** — garantido pela allow-list de `playerView.ts` (sem projeção de Sessão 0) e pelo teste de vazamento `playerView.test.ts`.
-- Testes: cálculos CoC 7e, cobertura e a varredura de vazamento da Visão do Jogador (total: **65**).
+- **Privacidade:** a Sessão 0 é uma aba interna do app do Mestre. Como o app não possui Visão do Jogador nem qualquer canal de sincronização, não há como esse conteúdo chegar aos jogadores.
+- Testes: cálculos CoC 7e e cobertura (total: **58**).
 
 ### ⏳ Pendente (próximas fases)
-- **Fase 5:** Visão do Jogador (janela/rota própria + BroadcastChannel), busca global, exportar/importar mundo (backup)
+- **Fase 5 (ajustada):** busca global (`Ctrl/Cmd+K`) e exportar/importar o mundo (backup JSON). _A Visão do Jogador foi removida do escopo — o app é exclusivo do Mestre e offline._
 - **Fase 6:** Importador (Cidade/Cenário), reconciliação, pacotes de exemplo, prompts
 
 #### Pendências técnicas conhecidas

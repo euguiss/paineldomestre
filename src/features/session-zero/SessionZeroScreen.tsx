@@ -25,9 +25,9 @@ const TABS: { id: Tab; label: string }[] = [
 /**
  * Sessão 0 — exclusive Keeper tool (section 13).
  *
- * IMPORTANT: this screen lives only inside the Keeper app shell. There is no
- * route, link, window or BroadcastChannel that exposes it to players, and none
- * of its data is part of any Player View projection (covered by tests).
+ * The whole app is Keeper-only and offline: there is no player-facing route,
+ * window or sync channel anywhere, so Session Zero content has no way to reach
+ * players. It is just one more tab inside the Keeper shell.
  */
 export function SessionZeroScreen() {
   const activeTableId = useUiStore((s) => s.activeTableId);
