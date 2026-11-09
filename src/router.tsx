@@ -7,6 +7,7 @@ import { PlotsScreen } from './features/plots/PlotsScreen';
 import { CluesScreen } from './features/clues/CluesScreen';
 import { HandoutsScreen } from './features/handouts/HandoutsScreen';
 import { JournalScreen } from './features/journal/JournalScreen';
+import { GraphScreen } from './features/graph/GraphScreen';
 import { PlaceholderScreen } from './components/PlaceholderScreen';
 
 /**
@@ -28,7 +29,7 @@ export const router = createHashRouter([
       { path: 'tramas', element: <PlotsScreen /> },
       { path: 'pistas', element: <CluesScreen /> },
       { path: 'handouts', element: <HandoutsScreen /> },
-      { path: 'grafo', element: <PlaceholderScreen title="Grafo de Conexões" phase="Fase 4" /> },
+      { path: 'grafo', element: <GraphScreen /> },
       { path: 'diario', element: <JournalScreen /> },
       { path: 'sessao-zero', element: <PlaceholderScreen title="Sessão 0" phase="Fase 7" /> },
       { path: 'config', element: <PlaceholderScreen title="Configurações" phase="Fase 5" /> },

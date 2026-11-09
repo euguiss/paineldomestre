@@ -7,7 +7,9 @@ import { ConditionEditor } from '@/components/forms/ConditionEditor';
 import { useConditionOptions } from '@/features/shared/useConditionOptions';
 import { describeCondition } from '@/domain/describeCondition';
 import { makeNameLookup } from '@/features/shared/nameLookup';
+import { consistencyWarningsForEntity } from '@/domain/consistency';
 import { useLiveData } from '@/db/useLiveData';
+import { AlertTriangle } from 'lucide-react';
 
 interface Props {
   npc: NpcEntity;
@@ -35,7 +37,12 @@ export function NpcDetail({ npc, onClose }: Props) {
   const locations = useLiveData(() => db.locations.toArray(), []) ?? [];
   const plots = options.plots;
   const factions = useLiveData(() => db.factions.toArray(), []) ?? [];
+  const tables = useLiveData(() => db.gameTables.toArray(), []) ?? [];
+  const investigators = useLiveData(() => db.investigators.toArray(), []) ?? [];
+  const events = useLiveData(() => db.events.toArray(), []) ?? [];
   const names = makeNameLookup({ plots, clues: options.clues, npcs: options.npcs, locations });
+
+  const warnings = consistencyWarningsForEntity({ tables, investigators, events, entityId: npc.id });
 
   return (
     <div>
@@ -45,6 +52,17 @@ export function NpcDetail({ npc, onClose }: Props) {
           <X size={18} />
         </button>
       </div>
+
+      {warnings.length > 0 && (
+        <div className="border-b border-secret/30 bg-secret/10 px-4 py-2 text-xs text-secret">
+          {warnings.map((w, i) => (
+            <div key={i} className="flex items-start gap-1">
+              <AlertTriangle size={13} className="mt-0.5 shrink-0" />
+              <span><strong>{w.tableName}:</strong> {w.message}</span>
+            </div>
+          ))}
+        </div>
+      )}
 
       <div className="flex gap-1 border-b border-border px-2 py-1">
         {TABS.map((t) => (

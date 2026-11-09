@@ -80,6 +80,10 @@ As **regras de negócio** ficam em `src/domain/` como funções puras e testadas
 | `describeCondition.ts` | 5.2 — descrição legível (pt-BR) de uma condição |
 | `dossier.ts` | 5.3 — resolução do dossiê do local em tempo de leitura |
 | `effects.ts` | Effects + `recordEvent` — aplica mudanças e registra o evento (5.7) |
+| `clocks.ts` | 5.4 — quais beats sugerir ao avançar o relógio de cada trama |
+| `threeCluesRule.ts` | 5.5 — cobertura de pistas por conclusão (regra dos três) |
+| `consistency.ts` | 5.6 — avisos entre mesas ("esta mesa ainda não sabe disso") |
+| `graph.ts` | 6.8 — grafo de conexões e matriz de cruzamentos (nós de cruzamento) |
 
 ### Decisões
 
@@ -117,8 +121,15 @@ As **regras de negócio** ficam em `src/domain/` como funções puras e testadas
 - **Nota rápida (atalho `N`)** vira um Event do tipo "nota" vinculado à entidade em foco.
 - Testes: aplicação de cada `Effect` e `recordEvent` (total: **32**).
 
+### ✅ Fase 4
+- **"Avançar tempo":** diálogo para escolher quantos dias passam e quanto cada trama avança. Beats que ficam devidos entram na fila **"Acontecendo no mundo"**; o Mestre **confirma, edita ou descarta** cada um (nada é aplicado sozinho). Confirmar aplica os `Effect` e cria um Event.
+- **Regra dos três (5.5):** alerta amarelo no Quadro de Tramas para conclusões com menos de 3 pistas disponíveis.
+- **Grafo de Conexões (React Flow):** nós de tramas/NPCs/locais/facções, arestas de pertence/aparece-em/pista-ponte/controla, filtros por tipo e trama, **nós de cruzamento destacados**; clicar num nó abre a entidade.
+- **Matriz de cruzamentos:** linhas = NPCs/locais/facções, colunas = tramas, com ✦ nos cruzamentos.
+- **Múltiplas mesas (5.6):** avisos de consistência na ficha do NPC ("esta mesa ainda não sabe disso") quando outra mesa alterou a entidade.
+- Testes: regra dos três, sugestão de beats, consistência e grafo/matriz (total: **45**).
+
 ### ⏳ Pendente (próximas fases)
-- **Fase 4:** relógios ("Avançar tempo" + beats), regra dos três, grafo e matriz de cruzamentos, múltiplas mesas
 - **Fase 7:** Sessão 0 (roteiro, lore, rumores, tom, criação de investigadores, vínculos, cobertura)
 - **Fase 5:** Visão do Jogador, busca global, exportar/importar mundo (backup)
 - **Fase 6:** Importador (Cidade/Cenário), reconciliação, pacotes de exemplo, prompts
