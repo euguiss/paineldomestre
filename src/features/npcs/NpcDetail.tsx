@@ -8,6 +8,7 @@ import { useConditionOptions } from '@/features/shared/useConditionOptions';
 import { describeCondition } from '@/domain/describeCondition';
 import { makeNameLookup } from '@/features/shared/nameLookup';
 import { consistencyWarningsForEntity } from '@/domain/consistency';
+import { InvestigatorLinks } from '@/features/shared/InvestigatorLinks';
 import { useLiveData } from '@/db/useLiveData';
 import { AlertTriangle } from 'lucide-react';
 
@@ -243,6 +244,9 @@ export function NpcDetail({ npc, onClose }: Props) {
             <div className="flex flex-wrap gap-1">
               {npc.layers.map((l, i) => (<Chip key={i}>{plots.find((p) => p.id === l.plotId)?.name ?? '—'}</Chip>))}
               {npc.layers.length === 0 && <span className="italic text-muted">Nenhuma.</span>}
+            </div>
+            <div className="mt-2">
+              <InvestigatorLinks entityId={npc.id} />
             </div>
           </div>
         )}

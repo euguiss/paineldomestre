@@ -44,11 +44,13 @@ export function Button({
   onClick,
   variant = 'default',
   type = 'button',
+  className = '',
 }: {
   children: ReactNode;
   onClick?: () => void;
   variant?: 'default' | 'accent' | 'danger';
   type?: 'button' | 'submit';
+  className?: string;
 }) {
   const cls =
     variant === 'accent'
@@ -57,7 +59,7 @@ export function Button({
         ? 'bg-secret/20 text-secret hover:bg-secret/30'
         : 'bg-surface-2 text-text hover:bg-surface';
   return (
-    <button type={type} onClick={onClick} className={`rounded border border-border px-3 py-1 text-sm ${cls}`}>
+    <button type={type} onClick={onClick} className={`rounded border border-border px-3 py-1 text-sm ${cls} ${className}`}>
       {children}
     </button>
   );

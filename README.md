@@ -84,6 +84,9 @@ As **regras de negócio** ficam em `src/domain/` como funções puras e testadas
 | `threeCluesRule.ts` | 5.5 — cobertura de pistas por conclusão (regra dos três) |
 | `consistency.ts` | 5.6 — avisos entre mesas ("esta mesa ainda não sabe disso") |
 | `graph.ts` | 6.8 — grafo de conexões e matriz de cruzamentos (nós de cruzamento) |
+| `cocRules.ts` | 13 — cálculos CoC 7e (derivados, metade/quinto, pontos) |
+| `coverage.ts` | 13 — cobertura investigadores × tramas, alertas |
+| `playerView.ts` | allow-list da Visão do Jogador (nunca vaza segredo/Sessão 0) |
 
 ### Decisões
 
@@ -129,9 +132,19 @@ As **regras de negócio** ficam em `src/domain/` como funções puras e testadas
 - **Múltiplas mesas (5.6):** avisos de consistência na ficha do NPC ("esta mesa ainda não sabe disso") quando outra mesa alterou a entidade.
 - Testes: regra dos três, sugestão de beats, consistência e grafo/matriz (total: **45**).
 
+### ✅ Fase 7 — Sessão 0 (exclusiva do Mestre)
+- **Roteiro:** blocos ordenáveis com tempo estimado, notas, concluído e cronômetro.
+- **Guia de ambientação:** cartões de lore separando "conhecimento comum" (`>`) de "segredo do Mestre" (`:::segredo`), com prévia; **rumores** com marcação de "contado à mesa X" e **"virar pista-semente" em 1 clique**.
+- **Tom e segurança:** linhas, véus, X-card, nível de horror; **regras da casa** ativáveis.
+- **Criação de investigadores:** assistente CoC 7e com **valores derivados automáticos** (PV, PM, SAN, MOV, Corpo, Bônus de Dano), **metade/quinto** de cada perícia e **contador de pontos** (ocupação EDU×4 / interesse INT×2) com aviso de excesso. Sempre lembra de conferir o livro.
+- **Vínculos com o mundo:** cada investigador liga-se a local/NPC/facção/trama; o vínculo aparece como nota **no dossiê do local e na ficha do NPC** ("ligado ao investigador X").
+- **Painel de cobertura:** matriz investigador × trama + alertas de "investigador sem vínculo" e "trama sem nenhum investigador ligado".
+- **Modo leitura** em tela cheia (local, sem sincronização) e **ficha para impressão** (HTML/PDF, sem notas do Mestre).
+- **Privacidade (crítico):** a Sessão 0 não tem rota, link nem canal para jogadores, e **nenhum dado dela entra na Visão do Jogador** — garantido pela allow-list de `playerView.ts` (sem projeção de Sessão 0) e pelo teste de vazamento `playerView.test.ts`.
+- Testes: cálculos CoC 7e, cobertura e a varredura de vazamento da Visão do Jogador (total: **65**).
+
 ### ⏳ Pendente (próximas fases)
-- **Fase 7:** Sessão 0 (roteiro, lore, rumores, tom, criação de investigadores, vínculos, cobertura)
-- **Fase 5:** Visão do Jogador, busca global, exportar/importar mundo (backup)
+- **Fase 5:** Visão do Jogador (janela/rota própria + BroadcastChannel), busca global, exportar/importar mundo (backup)
 - **Fase 6:** Importador (Cidade/Cenário), reconciliação, pacotes de exemplo, prompts
 
 #### Pendências técnicas conhecidas

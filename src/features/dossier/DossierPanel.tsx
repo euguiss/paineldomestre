@@ -6,6 +6,7 @@ import { useUiStore } from '@/state/uiStore';
 import { db } from '@/db/database';
 import { recordEvent } from '@/domain/effects';
 import { useSessionContext } from '@/features/shared/useSessionContext';
+import { InvestigatorLinks } from '@/features/shared/InvestigatorLinks';
 import { PresentationMode } from './PresentationMode';
 
 interface Props {
@@ -293,6 +294,9 @@ export function DossierPanel({ locationId }: Props) {
             </ul>
           )}
         </Section>
+
+        {/* Investigator links */}
+        <InvestigatorLinks entityId={location.id} />
 
         {/* Footer actions */}
         <div className="flex items-center gap-2 border-t border-border pt-3 text-sm">
