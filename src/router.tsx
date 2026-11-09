@@ -1,6 +1,10 @@
 import { createHashRouter } from 'react-router-dom';
 import { AppLayout } from './components/AppLayout';
 import { MapScreen } from './features/map/MapScreen';
+import { NpcsScreen } from './features/npcs/NpcsScreen';
+import { FactionsScreen } from './features/factions/FactionsScreen';
+import { PlotsScreen } from './features/plots/PlotsScreen';
+import { CluesScreen } from './features/clues/CluesScreen';
 import { PlaceholderScreen } from './components/PlaceholderScreen';
 
 /**
@@ -17,10 +21,10 @@ export const router = createHashRouter([
     element: <AppLayout />,
     children: [
       { index: true, element: <MapScreen /> },
-      { path: 'npcs', element: <PlaceholderScreen title="NPCs" phase="Fase 2" /> },
-      { path: 'faccoes', element: <PlaceholderScreen title="Facções" phase="Fase 2" /> },
-      { path: 'tramas', element: <PlaceholderScreen title="Quadro de Tramas" phase="Fase 2 / 4" /> },
-      { path: 'pistas', element: <PlaceholderScreen title="Gerenciador de Pistas" phase="Fase 2" /> },
+      { path: 'npcs', element: <NpcsScreen /> },
+      { path: 'faccoes', element: <FactionsScreen /> },
+      { path: 'tramas', element: <PlotsScreen /> },
+      { path: 'pistas', element: <CluesScreen /> },
       { path: 'handouts', element: <PlaceholderScreen title="Biblioteca de Handouts" phase="Fase 3" /> },
       { path: 'grafo', element: <PlaceholderScreen title="Grafo de Conexões" phase="Fase 4" /> },
       { path: 'diario', element: <PlaceholderScreen title="Diário / Linha do Tempo" phase="Fase 3" /> },

@@ -74,6 +74,7 @@ As **regras de negócio** ficam em `src/domain/` como funções puras e testadas
 |---|---|
 | `readAloud.ts` | 5.1 — escolha da variante de leitura com cascata de fallback |
 | `activation.ts` | 5.2 — avaliação das condições de ativação das camadas |
+| `describeCondition.ts` | 5.2 — descrição legível (pt-BR) de uma condição |
 | `dossier.ts` | 5.3 — resolução do dossiê do local em tempo de leitura |
 
 ### Decisões
@@ -97,8 +98,14 @@ As **regras de negócio** ficam em `src/domain/` como funções puras e testadas
 - Seed 100% original em pt-BR + "Começar do zero"
 - Testes: resolução de leitura (5.1) e dossiê (5.3)
 
+### ✅ Fase 2
+- **Quadro de Tramas:** cards com relógio segmentado clicável, estado, ameaça, verdade oculta, marcos e conclusões. Mudar o estado/relógio de uma trama liga/desliga suas camadas nos locais e NPCs (o dossiê reavalia ao vivo).
+- **NPCs:** grade com busca e filtro por status; ficha com abas (Geral, Ficha CoC, Agenda, Por trama, Relações); camadas por trama com **editor de condição de ativação por formulário** (E/OU aninhados, sem digitar código).
+- **Facções:** ficha com objetivos, recursos, membros, locais e camadas de trama.
+- **Gerenciador de Pistas:** tabela filtrável por trama/status/ponte, com edição inline de texto e status.
+- Testes: avaliação (5.2) e descrição de condições de ativação, além dos anteriores (total: 21).
+
 ### ⏳ Pendente (próximas fases)
-- **Fase 2:** telas de NPCs, Facções, Tramas, Pistas; edição de camadas e condições por formulário
 - **Fase 3:** handouts, cartões de cena editáveis, diário, modo sessão, ações rápidas → eventos
 - **Fase 4:** relógios, "Avançar tempo", regra dos três, grafo e matriz de cruzamentos, múltiplas mesas
 - **Fase 7:** Sessão 0 (roteiro, lore, rumores, tom, criação de investigadores, vínculos, cobertura)
