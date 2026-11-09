@@ -216,6 +216,10 @@ export async function installSeed(): Promise<void> {
         { name: 'Intimidação', value: 55 },
         { name: 'Ocultismo', value: 40 },
       ],
+      attacks: [
+        { name: 'Gancho de pesca', value: 55, damage: '1d6+BD', description: 'Improvisado, mas cruel em espaços fechados.' },
+        { name: 'Lampião', value: 40, damage: '1d4 + fogo', description: 'Pode atirar para incendiar redes e piche.' },
+      ],
     },
     schedule: [
       { period: 'manha', locationId: '', activity: 'Remenda redes no cais.' },
@@ -263,6 +267,9 @@ export async function installSeed(): Promise<void> {
       skills: [
         { name: 'Arte/Ofício (Óptica)', value: 80 },
         { name: 'Ciência (Física)', value: 55 },
+      ],
+      attacks: [
+        { name: 'Estilete de polir', value: 45, damage: '1d4', description: 'Pequena lâmina de bancada; usa só se encurralada.' },
       ],
     },
     schedule: [

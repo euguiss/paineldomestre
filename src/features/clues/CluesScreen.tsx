@@ -1,19 +1,25 @@
 import { useMemo, useState } from 'react';
-import { Link2, Trash2 } from 'lucide-react';
+import { Link2 } from 'lucide-react';
 import { useLiveData } from '@/db/useLiveData';
 import { db } from '@/db/database';
 import { newBase } from '@/db/ids';
-import { ScreenHeader, Button, Chip } from '@/components/ui';
+import { ScreenHeader, Button, Chip, Select } from '@/components/ui';
+import { ClueDetail } from './ClueDetail';
 import type { ClueEntity, ClueStatus } from '@/db/schema';
 
 const STATUSES: ClueStatus[] = ['nao-descoberta', 'descoberta', 'perdida'];
+const STATUS_LABEL: Record<ClueStatus, string> = {
+  'nao-descoberta': 'Não descoberta',
+  descoberta: 'Descoberta',
+  perdida: 'Perdida',
+};
 const STATUS_TONE: Record<ClueStatus, 'muted' | 'accent' | 'secret'> = {
   'nao-descoberta': 'muted',
   descoberta: 'accent',
   perdida: 'secret',
 };
 
-/** Gerenciador de Pistas: filterable table (section 6.6). */
+/** Gerenciador de Pistas: filtered list + per-clue detail editor (section 6.6). */
 export function CluesScreen() {
   const clues = useLiveData(() => db.clues.toArray(), []);
   const plots = useLiveData(() => db.plots.toArray(), []) ?? [];
@@ -22,6 +28,7 @@ export function CluesScreen() {
   const [plotFilter, setPlotFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState<ClueStatus | ''>('');
   const [bridgeOnly, setBridgeOnly] = useState(false);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const plotName = (id: string) => plots.find((p) => p.id === id)?.name ?? '—';
   const locName = (id?: string) => (id ? locations.find((l) => l.id === id)?.name ?? '—' : '—');
@@ -47,84 +54,65 @@ export function CluesScreen() {
       status: 'nao-descoberta',
     };
     await db.clues.put(clue);
+    setSelectedId(clue.id);
   }
 
-  async function setStatus(id: string, status: ClueStatus) {
-    await db.clues.update(id, { status, updatedAt: new Date().toISOString() });
-  }
+  const selected = clues?.find((c) => c.id === selectedId) ?? null;
 
   return (
-    <div className="flex h-full flex-col">
-      <ScreenHeader title="Gerenciador de Pistas">
-        <Button variant="accent" onClick={addClue}>+ Nova pista</Button>
-      </ScreenHeader>
+    <div className="flex h-full">
+      <div className="flex min-w-0 flex-1 flex-col">
+        <ScreenHeader title="Gerenciador de Pistas">
+          <Button variant="accent" onClick={addClue}>+ Nova pista</Button>
+        </ScreenHeader>
 
-      <div className="flex flex-wrap items-center gap-2 border-b border-border px-4 py-2 text-sm">
-        <select className="rounded border border-border bg-surface-2 px-2 py-1" value={plotFilter} onChange={(e) => setPlotFilter(e.target.value)}>
-          <option value="">Todas as tramas</option>
-          {plots.map((p) => (<option key={p.id} value={p.id}>{p.name}</option>))}
-        </select>
-        <select className="rounded border border-border bg-surface-2 px-2 py-1" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as ClueStatus | '')}>
-          <option value="">Todos os status</option>
-          {STATUSES.map((s) => (<option key={s} value={s}>{s}</option>))}
-        </select>
-        <label className="flex items-center gap-1">
-          <input type="checkbox" checked={bridgeOnly} onChange={(e) => setBridgeOnly(e.target.checked)} /> só pontes
-        </label>
-      </div>
+        <div className="flex flex-wrap items-center gap-2 border-b border-border px-5 py-2 text-sm">
+          <Select className="w-auto" value={plotFilter} onChange={(e) => setPlotFilter(e.target.value)}>
+            <option value="">Todas as tramas</option>
+            {plots.map((p) => (<option key={p.id} value={p.id}>{p.name}</option>))}
+          </Select>
+          <Select className="w-auto" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value as ClueStatus | '')}>
+            <option value="">Todos os status</option>
+            {STATUSES.map((s) => (<option key={s} value={s}>{STATUS_LABEL[s]}</option>))}
+          </Select>
+          <label className="flex items-center gap-1.5 text-muted">
+            <input type="checkbox" checked={bridgeOnly} onChange={(e) => setBridgeOnly(e.target.checked)} /> só pontes
+          </label>
+        </div>
 
-      <div className="flex-1 overflow-y-auto">
-        <table className="w-full text-sm">
-          <thead className="sticky top-0 bg-surface-2 text-left text-xs uppercase text-muted">
-            <tr>
-              <th className="px-3 py-2">Pista</th>
-              <th className="px-3 py-2">Tramas</th>
-              <th className="px-3 py-2">Local</th>
-              <th className="px-3 py-2">Como obter</th>
-              <th className="px-3 py-2">Status</th>
-              <th className="px-3 py-2"></th>
-            </tr>
-          </thead>
-          <tbody>
+        <div className="min-h-0 flex-1 overflow-y-auto p-3">
+          <ul className="space-y-2">
             {filtered.map((c) => (
-              <tr key={c.id} className="border-b border-border align-top hover:bg-surface-2/40">
-                <td className="px-3 py-2">
-                  <input
-                    className="w-full bg-transparent"
-                    value={c.text}
-                    onChange={(e) => db.clues.update(c.id, { text: e.target.value, updatedAt: new Date().toISOString() })}
-                  />
-                  {c.isBridge && <Chip tone="accent"><Link2 size={10} className="mr-0.5 inline" />ponte</Chip>}
-                </td>
-                <td className="px-3 py-2">{c.plotIds.map(plotName).join(', ')}</td>
-                <td className="px-3 py-2">{locName(c.locationId)}</td>
-                <td className="px-3 py-2 text-muted">
-                  {c.howToObtain.method}
-                  {c.howToObtain.difficulty ? ` (${c.howToObtain.difficulty})` : ''}
-                </td>
-                <td className="px-3 py-2">
-                  <select
-                    className={`rounded border border-border bg-surface-2 px-1 py-0.5 text-xs`}
-                    value={c.status}
-                    onChange={(e) => setStatus(c.id, e.target.value as ClueStatus)}
-                  >
-                    {STATUSES.map((s) => (<option key={s} value={s}>{s}</option>))}
-                  </select>
-                  <span className="ml-1"><Chip tone={STATUS_TONE[c.status]}>{c.status}</Chip></span>
-                </td>
-                <td className="px-3 py-2">
-                  <button className="text-muted hover:text-secret" onClick={() => { if (confirm('Apagar pista?')) void db.clues.delete(c.id); }}>
-                    <Trash2 size={14} />
-                  </button>
-                </td>
-              </tr>
+              <li key={c.id}>
+                <button
+                  onClick={() => setSelectedId(c.id)}
+                  className={`block w-full rounded-lg border px-3 py-2.5 text-left transition-colors ${selectedId === c.id ? 'border-accent bg-accent/10' : 'border-border bg-surface hover:bg-surface-2'}`}
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="line-clamp-2 text-sm">{c.text || '(sem texto)'}</span>
+                    <Chip tone={STATUS_TONE[c.status]}>{STATUS_LABEL[c.status]}</Chip>
+                  </div>
+                  <div className="mt-1.5 flex flex-wrap items-center gap-1.5 text-[11px] text-muted">
+                    {c.isBridge && <Chip tone="accent"><Link2 size={10} className="mr-0.5 inline" />ponte</Chip>}
+                    <span>{c.plotIds.map(plotName).join(', ') || 'sem trama'}</span>
+                    <span>· {locName(c.locationId)}</span>
+                    {c.handoutIds.length > 0 && <span>· {c.handoutIds.length} handout(s)</span>}
+                  </div>
+                </button>
+              </li>
             ))}
-            {filtered.length === 0 && (
-              <tr><td colSpan={6} className="px-3 py-6 text-center text-muted">Nenhuma pista.</td></tr>
-            )}
-          </tbody>
-        </table>
+            {filtered.length === 0 && <li className="px-3 py-8 text-center text-muted">Nenhuma pista. Crie a primeira.</li>}
+          </ul>
+        </div>
       </div>
+
+      {selected && (
+        <aside className="flex w-[460px] shrink-0 flex-col overflow-hidden border-l border-border bg-surface">
+          <div className="min-h-0 flex-1 overflow-y-auto">
+            <ClueDetail key={selected.id} clue={selected} onClose={() => setSelectedId(null)} onDeleted={() => setSelectedId(null)} />
+          </div>
+        </aside>
+      )}
     </div>
   );
 }

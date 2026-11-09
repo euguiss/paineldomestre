@@ -53,7 +53,7 @@ export function KeeperMarkdown({ children, hideSecrets, className }: Props) {
   };
 
   return (
-    <div className={className}>
+    <div className={`kmd ${className ?? ''}`}>
       <Markdown remarkPlugins={[remarkGfm, remarkKeeperDirectives]} components={components}>
         {children}
       </Markdown>

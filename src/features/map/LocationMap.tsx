@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { MapContainer, ImageOverlay, Marker, Polygon, Tooltip, useMap } from 'react-leaflet';
+import { MapContainer, ImageOverlay, Marker, Polygon, Tooltip, ZoomControl, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import { useEffect } from 'react';
 import type { LocationEntity, MapEntity } from '@/db/schema';
@@ -96,7 +96,10 @@ export function LocationMap({ map }: Props) {
       zoomSnap={0.25}
       className="h-full w-full"
       attributionControl={false}
+      zoomControl={false}
     >
+      {/* Zoom moved to the right so it doesn't overlap the top-left toolbar. */}
+      <ZoomControl position="topright" />
       <FitBounds bounds={bounds} />
       <ImageOverlay url={imageUrl} bounds={bounds} />
 

@@ -91,8 +91,10 @@ export function NpcsScreen() {
       </div>
 
       {selected && (
-        <aside className="w-[460px] shrink-0 overflow-y-auto border-l border-border bg-surface">
-          <NpcDetail npc={selected} onClose={() => setSelectedId(null)} />
+        <aside className="flex w-[480px] shrink-0 flex-col overflow-hidden border-l border-border bg-surface">
+          <div className="min-h-0 flex-1 overflow-y-auto">
+            <NpcDetail npc={selected} onClose={() => setSelectedId(null)} />
+          </div>
         </aside>
       )}
     </div>

@@ -30,20 +30,26 @@ const ITEMS = [
 /** Left navigation rail. */
 export function SideNav() {
   return (
-    <nav className="flex w-20 shrink-0 flex-col items-stretch gap-1 border-r border-border bg-surface py-2">
+    <nav className="flex w-[84px] shrink-0 flex-col items-stretch gap-0.5 overflow-y-auto border-r border-border bg-surface px-1.5 py-2">
       {ITEMS.map(({ to, label, icon: Icon, end }) => (
         <NavLink
           key={to}
           to={to}
           end={end}
+          title={label}
           className={({ isActive }) =>
-            `flex flex-col items-center gap-1 px-1 py-2 text-[11px] ${
-              isActive ? 'text-accent' : 'text-muted hover:text-text'
+            `group relative flex flex-col items-center gap-1 rounded-lg px-1 py-2.5 text-[11px] font-medium transition-colors ${
+              isActive ? 'bg-accent/15 text-accent' : 'text-muted hover:bg-surface-2 hover:text-text'
             }`
           }
         >
-          <Icon size={20} aria-hidden />
-          <span>{label}</span>
+          {({ isActive }) => (
+            <>
+              {isActive && <span className="absolute left-0 top-1/2 h-6 w-0.5 -translate-y-1/2 rounded-r bg-accent" />}
+              <Icon size={20} aria-hidden />
+              <span className="leading-none">{label}</span>
+            </>
+          )}
         </NavLink>
       ))}
     </nav>

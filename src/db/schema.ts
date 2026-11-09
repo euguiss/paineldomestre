@@ -125,6 +125,8 @@ export interface CocStatBlock {
   Sorte?: number;
   /** Key skills: name -> value. */
   skills?: Array<{ name: string; value: number }>;
+  /** Attacks / weapons and carried items with damage and description. */
+  attacks?: Array<{ name: string; value?: number; damage?: string; description?: string }>;
 }
 
 export interface ScheduleEntry {

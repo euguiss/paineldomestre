@@ -44,8 +44,10 @@ export function AppLayout() {
           <Outlet />
         </main>
         {selectedLocationId && (
-          <aside className="w-[420px] shrink-0 overflow-y-auto border-l border-border bg-surface">
-            <DossierPanel locationId={selectedLocationId} />
+          <aside className="flex w-[440px] shrink-0 flex-col overflow-hidden border-l border-border bg-surface shadow-[inset_1px_0_0_rgb(var(--border))]">
+            <div className="min-h-0 flex-1 overflow-y-auto">
+              <DossierPanel locationId={selectedLocationId} />
+            </div>
           </aside>
         )}
       </div>

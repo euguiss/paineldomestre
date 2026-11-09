@@ -3,38 +3,51 @@
 @import '@fontsource/inter/600.css';
 @import '@fontsource/eb-garamond/400.css';
 @import '@fontsource/eb-garamond/500.css';
+@import '@fontsource/eb-garamond/600.css';
 @import '@fontsource/eb-garamond/400-italic.css';
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Theme tokens. Dark by default; `.light` overrides. */
+/*
+ * Theme tokens. A warm, "lamplit desk" dark theme by default; a parchment
+ * light theme as opt-in. Tuned for contrast and a calmer, more professional
+ * look than flat Tailwind grays.
+ */
 :root,
 .dark {
-  --bg: 15 16 22;
-  --surface: 24 26 35;
-  --surface-2: 33 36 48;
-  --border: 52 56 72;
-  --text: 226 228 236;
-  --muted: 148 154 170;
-  --accent: 180 120 70;
-  --secret: 200 70 70;
-  --sanity: 150 90 200;
-  --test: 90 150 200;
+  --bg: 14 15 20;
+  --surface: 22 24 32;
+  --surface-2: 30 33 44;
+  --surface-3: 40 44 58;
+  --border: 48 52 68;
+  --border-strong: 70 76 96;
+  --text: 228 230 238;
+  --muted: 150 156 172;
+  --accent: 198 136 78;
+  --accent-soft: 198 136 78;
+  --secret: 214 94 94;
+  --sanity: 168 112 214;
+  --test: 96 160 208;
+  --ok: 110 180 130;
 }
 
 .light {
-  --bg: 244 242 236;
-  --surface: 255 255 255;
-  --surface-2: 236 233 225;
-  --border: 210 205 195;
-  --text: 28 26 22;
-  --muted: 100 96 88;
-  --accent: 150 90 40;
-  --secret: 170 40 40;
-  --sanity: 120 60 170;
-  --test: 50 110 170;
+  --bg: 240 237 229;
+  --surface: 252 250 245;
+  --surface-2: 236 232 222;
+  --surface-3: 226 221 209;
+  --border: 214 208 196;
+  --border-strong: 190 182 166;
+  --text: 32 28 22;
+  --muted: 104 98 86;
+  --accent: 158 96 44;
+  --accent-soft: 158 96 44;
+  --secret: 176 46 46;
+  --sanity: 124 64 176;
+  --test: 46 112 170;
+  --ok: 64 140 92;
 }
 
 html,
@@ -45,6 +58,49 @@ body,
 
 body {
   @apply bg-bg text-text font-sans antialiased;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'ss01';
+}
+
+h1,
+h2,
+h3 {
+  letter-spacing: -0.01em;
+}
+
+/* Custom scrollbars — thin, theme-aware, present on every scroll area. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(var(--border-strong)) transparent;
+}
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-thumb {
+  background: rgb(var(--border-strong));
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background: rgb(var(--muted));
+  background-clip: padding-box;
+}
+
+/* Form controls: consistent, clearly-editable fields across the app. */
+input,
+textarea,
+select {
+  color: rgb(var(--text));
+}
+input::placeholder,
+textarea::placeholder {
+  color: rgb(var(--muted));
+  opacity: 0.8;
+}
+textarea {
+  line-height: 1.6;
+  resize: vertical;
 }
 
 /* Leaflet container must have an explicit background that fits the theme. */
@@ -53,14 +109,46 @@ body {
   font-family: inherit;
   outline: none;
 }
+.leaflet-control-zoom a {
+  background: rgb(var(--surface)) !important;
+  color: rgb(var(--text)) !important;
+  border-color: rgb(var(--border)) !important;
+}
+.leaflet-control-zoom a:hover {
+  background: rgb(var(--surface-2)) !important;
+}
+.leaflet-tooltip {
+  background: rgb(var(--surface)) !important;
+  color: rgb(var(--text)) !important;
+  border: 1px solid rgb(var(--border)) !important;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 0.4) !important;
+}
 
 /* Read-aloud block (markdown blockquote and the dossier highlight). */
 .read-aloud {
   @apply font-serif text-lg leading-relaxed;
 }
 
-/* Focus visibility for accessibility (section 9). */
+/* Prose defaults for rendered Keeper markdown. */
+.kmd p { margin: 0.35rem 0; }
+.kmd ul { list-style: disc; padding-left: 1.25rem; margin: 0.35rem 0; }
+.kmd ol { list-style: decimal; padding-left: 1.25rem; margin: 0.35rem 0; }
+.kmd strong { font-weight: 600; }
+.kmd em { font-style: italic; }
+.kmd h1, .kmd h2, .kmd h3 { font-family: '"EB Garamond"', serif; margin: 0.5rem 0 0.25rem; }
+
+/* Focus visibility for accessibility. */
 :focus-visible {
   outline: 2px solid rgb(var(--accent));
   outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Subtle entrance for panels/dialogs. */
+@keyframes pdm-fade-in {
+  from { opacity: 0; transform: translateY(2px); }
+  to { opacity: 1; transform: none; }
+}
+.animate-in {
+  animation: pdm-fade-in 0.12s ease-out;
 }
