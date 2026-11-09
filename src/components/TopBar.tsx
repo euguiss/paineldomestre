@@ -82,11 +82,15 @@ export function TopBar() {
         <SessionControls />
       </div>
 
-      {/* Global search placeholder (Fase 5) */}
-      <div className="flex items-center gap-2 rounded border border-border bg-surface-2 px-2 py-1 text-sm text-muted">
+      {/* Global search trigger */}
+      <button
+        className="flex items-center gap-2 rounded border border-border bg-surface-2 px-2 py-1 text-sm text-muted hover:text-text"
+        onClick={() => useUiStore.getState().setSearchOpen(true)}
+        aria-label="Abrir busca global"
+      >
         <Search size={16} aria-hidden />
-        <span className="hidden lg:inline">Busca (Ctrl/Cmd+K) — Fase 5</span>
-      </div>
+        <span className="hidden lg:inline">Busca (Ctrl/Cmd+K)</span>
+      </button>
 
       <button
         className="rounded border border-border bg-surface-2 p-2"

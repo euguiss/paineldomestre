@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "mode": "cidade",
+  "label": "Innsmouth — Distrito do Porto (exemplo)",
+  "locations": [
+    {
+      "externalKey": "armazem-enseada",
+      "name": "Armazém da Enseada",
+      "aliases": ["Galpão do Terceiro Píer"],
+      "kind": "armazem",
+      "district": "Porto",
+      "baseDescription": "Galpão de madeira enegrecida junto ao terceiro píer; cheira a maresia e piche.",
+      "readAloud": {
+        "generico": "> Um armazém portuário úmido, de tábuas escuras, perto do píer mais afastado."
+      },
+      "sensoryDetails": ["Gotejar constante.", "Marcas de maré alta altas demais na parede."],
+      "geradoPorIA": ["readAloud"],
+      "source": { "label": "Caderno pessoal do Mestre", "pageRef": "p. 2" }
+    },
+    {
+      "externalKey": "capitania",
+      "name": "Capitania dos Portos",
+      "kind": "instituicao",
+      "district": "Porto",
+      "baseDescription": "Prédio de pedra onde se guardam registros de embarcações e naufrágios.",
+      "readAloud": { "generico": "> Arquivos empoeirados e um funcionário de poucas palavras." },
+      "source": { "label": "Caderno pessoal do Mestre", "pageRef": "p. 3" }
+    }
+  ],
+  "npcs": [
+    {
+      "externalKey": "teobaldo-marsh",
+      "name": "Teobaldo Marsh",
+      "aliases": ["o velho do cais"],
+      "appearance": "Pescador idoso de ombros largos e olhos muito separados.",
+      "voiceAndMannerisms": "Fala devagar; evita olhar o mar ao falar da maré.",
+      "statBlockMarkdown": "Pescador forte; conhece cada corrente da enseada.",
+      "source": { "label": "Caderno pessoal do Mestre", "pageRef": "p. 4" }
+    }
+  ],
+  "factions": [
+    {
+      "externalKey": "irmandade-ancora-negra",
+      "name": "Irmandade da Âncora Negra",
+      "goals": "Manter o pacto com o que dorme sob a areia e esconder os desaparecimentos.",
+      "resources": "Controle informal do porto e silêncio da vizinhança."
+    }
+  ]
+}

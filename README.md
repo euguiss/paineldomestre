@@ -86,11 +86,14 @@ As **regras de negócio** ficam em `src/domain/` como funções puras e testadas
 | `graph.ts` | 6.8 — grafo de conexões e matriz de cruzamentos (nós de cruzamento) |
 | `cocRules.ts` | 13 — cálculos CoC 7e (derivados, metade/quinto, pontos) |
 | `coverage.ts` | 13 — cobertura investigadores × tramas, alertas |
+| `search.ts` | 6.11 — busca global em nome/texto/tags |
+| `import/reconcile.ts` | 6.1 — reconciliação (exata/alias/aproximada) |
+| `import/applyBatch.ts` | 6.1 — aplicar lote (idempotente), snapshot e desfazer |
 
 ### Decisões
 
 - Gerenciador de pacotes: **pnpm**. Grafo: **React Flow** (planejado p/ Fase 4). Ícones: **lucide-react** (empacotado).
-- IDs via `crypto.randomUUID()`. Export/import do mundo com blobs em **base64** (Fase 5).
+- IDs via `crypto.randomUUID()`. Export/import do mundo com blobs em **base64**.
 - A store do Dexie para "mesas" é exposta como **`gameTables`** (o nome `tables` é reservado pelo Dexie).
 - **App exclusivo do Mestre e offline.** Por decisão de projeto, **não existe Visão do Jogador**: nenhuma rota, janela ou canal para jogadores. A única superfície voltada ao jogador é a pré-visualização "como o jogador vê" dos handouts (que esconde segredos via `hideSecrets` no renderizador de markdown).
 
@@ -142,9 +145,23 @@ As **regras de negócio** ficam em `src/domain/` como funções puras e testadas
 - **Privacidade:** a Sessão 0 é uma aba interna do app do Mestre. Como o app não possui Visão do Jogador nem qualquer canal de sincronização, não há como esse conteúdo chegar aos jogadores.
 - Testes: cálculos CoC 7e e cobertura (total: **58**).
 
-### ⏳ Pendente (próximas fases)
-- **Fase 5 (ajustada):** busca global (`Ctrl/Cmd+K`) e exportar/importar o mundo (backup JSON). _A Visão do Jogador foi removida do escopo — o app é exclusivo do Mestre e offline._
-- **Fase 6:** Importador (Cidade/Cenário), reconciliação, pacotes de exemplo, prompts
+### ✅ Fase 5 (ajustada)
+- **Busca global** (`Ctrl/Cmd+K`): procura em locais, NPCs, facções, tramas, pistas e handouts (nome, texto e tags), com navegação por teclado.
+- **Backup do mundo (Configurações):** exportar/importar tudo em JSON com imagens em **base64** (roundtrip idêntico, coberto por teste), com aviso de direitos autorais. Também: alternar tema, recarregar exemplo e "Começar do zero".
+- _A Visão do Jogador foi removida do escopo — app exclusivo do Mestre e offline._
+
+### ✅ Fase 6 — Importador (Cidade e Cenário)
+- **Pacote e schema** versionados, validados com **zod**; documentado em `docs/import-schema.md`.
+- **Modo Cidade:** cria/atualiza Locais, NPCs e Facções por `externalKey`; locais entram **"sem pino"** (vão ao Painel de Pendências para você arrastar ao mapa); o que o texto não traz vira pendência, não é inventado.
+- **Modo Cenário:** cria Trama, Pistas, Cartões de cena e camadas, com **tela de reconciliação** (casar / mapear-mover-o-palco / fundir NPC / criar / ignorar). Nada é aplicado sem confirmação.
+- **Idempotência** por `externalKey` (reimportar atualiza, não duplica), **ImportBatch** com snapshot e **Desfazer lote**.
+- **Painel de Pendências:** locais sem pino, leituras pendentes, NPCs sem agenda, pistas sem local, conclusões com poucas pistas.
+- **Modo A (padrão, offline):** o app gera/copia os **prompts de conversão** (Cidade e Cenário) com o schema embutido; também salvos em `docs/prompt-importar-*.md`.
+- **Pacotes de exemplo:** `exemplos/pacote-cidade.json` e `exemplos/pacote-cenario.json` — o cenário referencia um local por **nome exato**, um por **alias** e um **inexistente**, demonstrando a reconciliação.
+- Testes: reconciliação, idempotência, desfazer lote, fusão de NPC preservando a ficha, validação dos exemplos (total: **78**).
+
+#### Fora do escopo entregue
+- **Modo B do importador (IA dentro do app, com chave de API):** deliberadamente **não implementado**. É opcional e desligado por padrão na especificação; o app continua 100% funcional e offline sem ele. O Modo A (prompts) cobre o mesmo fluxo sem depender de internet.
 
 #### Pendências técnicas conhecidas
 - O bundle ainda não é dividido em chunks (aviso de tamanho no build) — será resolvido com

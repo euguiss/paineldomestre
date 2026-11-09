@@ -9,7 +9,8 @@ import { HandoutsScreen } from './features/handouts/HandoutsScreen';
 import { JournalScreen } from './features/journal/JournalScreen';
 import { GraphScreen } from './features/graph/GraphScreen';
 import { SessionZeroScreen } from './features/session-zero/SessionZeroScreen';
-import { PlaceholderScreen } from './components/PlaceholderScreen';
+import { SettingsScreen } from './features/settings/SettingsScreen';
+import { ImportScreen } from './features/import/ImportScreen';
 
 /**
  * Hash router so the app works when opened straight from the filesystem.
@@ -31,7 +32,8 @@ export const router = createHashRouter([
       { path: 'grafo', element: <GraphScreen /> },
       { path: 'diario', element: <JournalScreen /> },
       { path: 'sessao-zero', element: <SessionZeroScreen /> },
-      { path: 'config', element: <PlaceholderScreen title="Configurações" phase="Fase 5" /> },
+      { path: 'importar', element: <ImportScreen /> },
+      { path: 'config', element: <SettingsScreen /> },
     ],
   },
 ]);

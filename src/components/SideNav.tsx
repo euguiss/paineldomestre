@@ -10,6 +10,7 @@ import {
   BookOpen,
   Settings,
   GraduationCap,
+  DownloadCloud,
 } from 'lucide-react';
 
 const ITEMS = [
@@ -22,6 +23,7 @@ const ITEMS = [
   { to: '/grafo', label: 'Grafo', icon: Share2 },
   { to: '/diario', label: 'Diário', icon: BookOpen },
   { to: '/sessao-zero', label: 'Sessão 0', icon: GraduationCap },
+  { to: '/importar', label: 'Importar', icon: DownloadCloud },
   { to: '/config', label: 'Config', icon: Settings },
 ];
 

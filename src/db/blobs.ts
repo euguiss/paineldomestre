@@ -25,18 +25,33 @@ export async function deleteBlob(id: string): Promise<void> {
   await db.blobs.delete(id);
 }
 
-/** Convert a Blob to a base64 data URL (used by world export). */
-export function blobToBase64(blob: Blob): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result as string);
-    reader.onerror = reject;
-    reader.readAsDataURL(blob);
-  });
+/**
+ * Convert a Blob to a base64 data URL (used by world export).
+ * Uses arrayBuffer() so it works both in the browser and under jsdom (whose
+ * FileReader.readAsDataURL is unreliable).
+ */
+export async function blobToBase64(blob: Blob): Promise<string> {
+  // Some environments (e.g. fake-indexeddb under jsdom) return a Blob-like
+  // without arrayBuffer(); normalize through Response in that case.
+  const buffer =
+    typeof blob.arrayBuffer === 'function' ? await blob.arrayBuffer() : await new Response(blob).arrayBuffer();
+  const bytes = new Uint8Array(buffer);
+  let binary = '';
+  const chunk = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunk) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + chunk));
+  }
+  const base64 = btoa(binary);
+  return `data:${blob.type || 'application/octet-stream'};base64,${base64}`;
 }
 
 /** Convert a base64 data URL back to a Blob (used by world import). */
 export async function base64ToBlob(dataUrl: string): Promise<Blob> {
-  const res = await fetch(dataUrl);
-  return res.blob();
+  const match = /^data:([^;]*);base64,(.*)$/s.exec(dataUrl);
+  if (!match) throw new Error('data URL inválida');
+  const type = match[1];
+  const binary = atob(match[2]);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i);
+  return new Blob([bytes], { type });
 }

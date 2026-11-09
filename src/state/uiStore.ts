@@ -21,6 +21,9 @@ interface UiState {
   /** Entity in focus for the quick-note shortcut (N): id + human label. */
   focusedEntity: { id: string; label: string } | null;
 
+  /** Whether the global search palette is open (Ctrl/Cmd+K). */
+  searchOpen: boolean;
+
   theme: 'dark' | 'light';
 
   setActiveTableId: (id: string | null) => void;
@@ -30,6 +33,7 @@ interface UiState {
   setActiveSessionId: (id: string | null) => void;
   selectLocation: (id: string | null) => void;
   setFocusedEntity: (e: { id: string; label: string } | null) => void;
+  setSearchOpen: (open: boolean) => void;
   toggleTheme: () => void;
 }
 
@@ -41,6 +45,7 @@ export const useUiStore = create<UiState>((set) => ({
   activeSessionId: null,
   selectedLocationId: null,
   focusedEntity: null,
+  searchOpen: false,
   theme: 'dark',
 
   setActiveTableId: (id) => set({ activeTableId: id }),
@@ -50,6 +55,7 @@ export const useUiStore = create<UiState>((set) => ({
   setActiveSessionId: (id) => set({ activeSessionId: id }),
   selectLocation: (id) => set({ selectedLocationId: id, focusedEntity: id ? { id, label: 'local' } : null }),
   setFocusedEntity: (e) => set({ focusedEntity: e }),
+  setSearchOpen: (open) => set({ searchOpen: open }),
   toggleTheme: () =>
     set((s) => {
       const next = s.theme === 'dark' ? 'light' : 'dark';

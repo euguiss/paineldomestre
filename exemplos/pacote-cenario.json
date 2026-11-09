@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "mode": "cenario",
+  "label": "A Maré que Lembra (exemplo)",
+  "plot": {
+    "externalKey": "mare-que-lembra",
+    "name": "A Maré que Lembra",
+    "sourceModule": "Cenário próprio (demo)",
+    "hiddenTruth": "A Irmandade faz pactos com algo que dorme sob o banco de areia e exige um 'convidado' a cada equinócio.",
+    "antagonists": "A Irmandade da Âncora Negra; o velho Teobaldo Marsh.",
+    "threatLevel": 3,
+    "clockSegments": 6,
+    "conclusions": [
+      { "externalKey": "con-pacto", "title": "Descobrir o pacto da Irmandade", "description": "Entender que os desaparecimentos são oferendas." },
+      { "externalKey": "con-ritual", "title": "Identificar o local do ritual", "description": "Localizar o armazém usado nas marés." }
+    ]
+  },
+  "clues": [
+    {
+      "externalKey": "pista-marcas",
+      "text": "Marcas de maré alta na parede interna, muito acima do nível possível.",
+      "locationRef": "Armazém da Enseada",
+      "howToObtain": "Observar o interior com atenção",
+      "difficulty": "Regular",
+      "revealsConclusion": "con-ritual"
+    },
+    {
+      "externalKey": "pista-lista",
+      "text": "A lista de 'convidados' com três nomes riscados.",
+      "locationRef": "Galpão do Terceiro Píer",
+      "howToObtain": "Procurar sob a lona",
+      "difficulty": "Dificil",
+      "revealsConclusion": "con-pacto"
+    },
+    {
+      "externalKey": "pista-observatorio",
+      "text": "Um registro de naufrágio citando um sino afundado.",
+      "locationRef": "Observatório da Colina",
+      "howToObtain": "Pesquisar arquivos",
+      "difficulty": "Regular",
+      "isBridge": true
+    }
+  ],
+  "scenes": [
+    {
+      "externalKey": "cena-reuniao",
+      "title": "A reunião interrompida",
+      "locationRef": "Armazém da Enseada",
+      "trigger": "Os investigadores entram no armazém à noite, na véspera da maré.",
+      "openingText": "> Doze figuras encapuzadas formam um semicírculo diante de uma poça redonda.",
+      "whatHappens": "A Irmandade tenta expulsar ou 'convidar' os investigadores."
+    }
+  ],
+  "locationLayers": [
+    {
+      "locationRef": "Armazém da Enseada",
+      "whatChanges": "Quando a trama ativa, o armazém guarda os preparativos do ritual.",
+      "readAloudAppend": "> No canto, sob uma lona, há um círculo de giz salgado meio apagado."
+    }
+  ],
+  "npcLayers": [
+    {
+      "npcRef": "Teobaldo Marsh",
+      "knows": "Quem foi 'convidado' e quando; o calendário das marés.",
+      "hides": "Que ele mesmo escolhe os convidados.",
+      "revealsIfPressed": "Admite que 'a enseada escolhe', desviando a culpa."
+    }
+  ]
+}
