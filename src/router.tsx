@@ -5,6 +5,8 @@ import { NpcsScreen } from './features/npcs/NpcsScreen';
 import { FactionsScreen } from './features/factions/FactionsScreen';
 import { PlotsScreen } from './features/plots/PlotsScreen';
 import { CluesScreen } from './features/clues/CluesScreen';
+import { HandoutsScreen } from './features/handouts/HandoutsScreen';
+import { JournalScreen } from './features/journal/JournalScreen';
 import { PlaceholderScreen } from './components/PlaceholderScreen';
 
 /**
@@ -25,9 +27,9 @@ export const router = createHashRouter([
       { path: 'faccoes', element: <FactionsScreen /> },
       { path: 'tramas', element: <PlotsScreen /> },
       { path: 'pistas', element: <CluesScreen /> },
-      { path: 'handouts', element: <PlaceholderScreen title="Biblioteca de Handouts" phase="Fase 3" /> },
+      { path: 'handouts', element: <HandoutsScreen /> },
       { path: 'grafo', element: <PlaceholderScreen title="Grafo de Conexões" phase="Fase 4" /> },
-      { path: 'diario', element: <PlaceholderScreen title="Diário / Linha do Tempo" phase="Fase 3" /> },
+      { path: 'diario', element: <JournalScreen /> },
       { path: 'sessao-zero', element: <PlaceholderScreen title="Sessão 0" phase="Fase 7" /> },
       { path: 'config', element: <PlaceholderScreen title="Configurações" phase="Fase 5" /> },
     ],

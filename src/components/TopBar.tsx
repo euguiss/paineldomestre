@@ -2,6 +2,7 @@ import { Moon, Sun, Clock, CloudRain, Search } from 'lucide-react';
 import { useUiStore } from '@/state/uiStore';
 import { useLiveData } from '@/db/useLiveData';
 import { db } from '@/db/database';
+import { SessionControls } from '@/features/session/SessionControls';
 import type { DayPeriod } from '@/db/schema';
 
 const PERIOD_LABELS: Record<DayPeriod, string> = {
@@ -76,10 +77,15 @@ export function TopBar() {
         <CloudRain size={16} aria-hidden /> {weather === 'chuva' ? 'Chuva' : 'Seco'}
       </button>
 
+      {/* Session controls */}
+      <div className="ml-auto flex items-center gap-2">
+        <SessionControls />
+      </div>
+
       {/* Global search placeholder (Fase 5) */}
-      <div className="ml-auto flex items-center gap-2 rounded border border-border bg-surface-2 px-2 py-1 text-sm text-muted">
+      <div className="flex items-center gap-2 rounded border border-border bg-surface-2 px-2 py-1 text-sm text-muted">
         <Search size={16} aria-hidden />
-        <span className="hidden md:inline">Busca global (Ctrl/Cmd+K) — Fase 5</span>
+        <span className="hidden lg:inline">Busca (Ctrl/Cmd+K) — Fase 5</span>
       </div>
 
       <button

@@ -4,6 +4,8 @@ import { useDossier } from './useDossier';
 import { KeeperMarkdown } from '@/markdown/KeeperMarkdown';
 import { useUiStore } from '@/state/uiStore';
 import { db } from '@/db/database';
+import { recordEvent } from '@/domain/effects';
+import { useSessionContext } from '@/features/shared/useSessionContext';
 import { PresentationMode } from './PresentationMode';
 
 interface Props {
@@ -14,6 +16,7 @@ interface Props {
 export function DossierPanel({ locationId }: Props) {
   const dossier = useDossier(locationId);
   const selectLocation = useUiStore((s) => s.selectLocation);
+  const ctx = useSessionContext();
   const [presenting, setPresenting] = useState(false);
 
   if (!dossier) {
@@ -24,10 +27,18 @@ export function DossierPanel({ locationId }: Props) {
     dossier;
 
   async function toggleDiscovered() {
-    await db.locations.update(location.id, {
-      discovered: !location.discovered,
-      updatedAt: new Date().toISOString(),
-    });
+    if (!location.discovered) {
+      await recordEvent({
+        type: 'descoberta',
+        text: `Local revelado aos jogadores: ${location.name}.`,
+        inGameDate: ctx.inGameDate,
+        tableId: ctx.tableId ?? undefined,
+        linkedEntityIds: [location.id],
+        effects: [{ type: 'markLocationDiscovered', locationId: location.id }],
+      });
+    } else {
+      await db.locations.update(location.id, { discovered: false, updatedAt: new Date().toISOString() });
+    }
   }
 
   function copyReadAloud() {
@@ -87,9 +98,27 @@ export function DossierPanel({ locationId }: Props) {
               {npcsPresent.map((n) => {
                 const activity = n.schedule.find((s) => s.locationId === location.id)?.activity;
                 return (
-                  <li key={n.id} className="rounded border border-border bg-surface-2 px-2 py-1 text-sm">
-                    <span className="font-medium">{n.name}</span>
-                    {activity && <span className="text-muted"> — {activity}</span>}
+                  <li key={n.id} className="flex items-center justify-between rounded border border-border bg-surface-2 px-2 py-1 text-sm">
+                    <span>
+                      <span className="font-medium">{n.name}</span>
+                      {activity && <span className="text-muted"> — {activity}</span>}
+                    </span>
+                    <button
+                      className="rounded bg-secret/10 px-2 py-0.5 text-[11px] text-secret hover:bg-secret/20"
+                      title="Registrar morte do NPC"
+                      onClick={() =>
+                        recordEvent({
+                          type: 'morte',
+                          text: `${n.name} morreu em ${location.name}.`,
+                          inGameDate: ctx.inGameDate,
+                          tableId: ctx.tableId ?? undefined,
+                          linkedEntityIds: [n.id, location.id],
+                          effects: [{ type: 'setNpcStatus', npcId: n.id, status: 'morto' }],
+                        })
+                      }
+                    >
+                      morreu
+                    </button>
                   </li>
                 );
               })}
@@ -115,7 +144,14 @@ export function DossierPanel({ locationId }: Props) {
                     <button
                       className="rounded bg-accent/20 px-2 py-0.5 text-accent hover:bg-accent/30"
                       onClick={() =>
-                        db.clues.update(c.id, { status: 'descoberta', updatedAt: new Date().toISOString() })
+                        recordEvent({
+                          type: 'descoberta',
+                          text: `Pista descoberta em ${location.name}: ${c.text}`,
+                          inGameDate: ctx.inGameDate,
+                          tableId: ctx.tableId ?? undefined,
+                          linkedEntityIds: [c.id, location.id],
+                          effects: [{ type: 'setClueStatus', clueId: c.id, status: 'descoberta' }],
+                        })
                       }
                     >
                       Marcar descoberta
@@ -152,6 +188,31 @@ export function DossierPanel({ locationId }: Props) {
                   {s.openingText && (
                     <div className="mt-1">
                       <KeeperMarkdown>{s.openingText}</KeeperMarkdown>
+                    </div>
+                  )}
+                  {s.outcomes.length > 0 && (
+                    <div className="mt-2 space-y-1">
+                      <p className="text-[11px] uppercase tracking-wide text-muted">Desfechos</p>
+                      {s.outcomes.map((o, i) => (
+                        <button
+                          key={i}
+                          className="block w-full rounded border border-border bg-surface px-2 py-1 text-left text-xs hover:border-accent"
+                          title={o.description}
+                          onClick={() =>
+                            recordEvent({
+                              type: 'outro',
+                              text: `Cena "${s.title}" → ${o.label}: ${o.description}`,
+                              inGameDate: ctx.inGameDate,
+                              tableId: ctx.tableId ?? undefined,
+                              linkedEntityIds: [s.id, location.id],
+                              effects: [...o.effects, { type: 'markSceneUsed', sceneCardId: s.id }],
+                            })
+                          }
+                        >
+                          <span className="font-medium text-accent">{o.label}</span>
+                          <span className="text-muted"> — {o.description}</span>
+                        </button>
+                      ))}
                     </div>
                   )}
                 </li>

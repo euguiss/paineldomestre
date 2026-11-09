@@ -46,6 +46,9 @@ mapas, locais, NPCs, facções, tramas, pistas, uma mesa, investigadores e uma S
 5. Botões de ação rápida: **copiar** a leitura, **modo apresentação** (tela cheia), **marcar pista
    como descoberta**, alternar **visível/oculto** do local.
 6. **Importar imagem de mapa:** botão "Importar imagem" na barra do mapa (aceita PNG/JPG/SVG).
+7. **Modo sessão:** clique em **"Iniciar sessão"** no topo. Com a sessão ativa, as ações rápidas
+   (marcar pista, "morreu", revelar local, desfechos de cena, entregar handout) viram eventos no
+   **Diário** automaticamente. Pressione **`N`** para uma nota rápida vinculada ao item em foco.
 
 ### Markdown do Mestre
 
@@ -76,6 +79,7 @@ As **regras de negócio** ficam em `src/domain/` como funções puras e testadas
 | `activation.ts` | 5.2 — avaliação das condições de ativação das camadas |
 | `describeCondition.ts` | 5.2 — descrição legível (pt-BR) de uma condição |
 | `dossier.ts` | 5.3 — resolução do dossiê do local em tempo de leitura |
+| `effects.ts` | Effects + `recordEvent` — aplica mudanças e registra o evento (5.7) |
 
 ### Decisões
 
@@ -105,9 +109,16 @@ As **regras de negócio** ficam em `src/domain/` como funções puras e testadas
 - **Gerenciador de Pistas:** tabela filtrável por trama/status/ponte, com edição inline de texto e status.
 - Testes: avaliação (5.2) e descrição de condições de ativação, além dos anteriores (total: 21).
 
+### ✅ Fase 3
+- **Biblioteca de Handouts:** grade com prévia, upload por botão **ou arrastar-e-soltar** (imagem/PDF) e handouts de texto; vínculo a pista/local; botão **"entregar à mesa X"**; pré-visualização **"como o jogador vê"** (sem notas do Mestre).
+- **Cartões de cena** no dossiê com **desfechos clicáveis** que aplicam `Effect` e registram o evento.
+- **Diário / Linha do Tempo:** eventos por data de jogo, filtro por mesa e tipo, nota editável inline.
+- **Modo sessão:** iniciar/encerrar sessão na barra superior; com sessão ativa, toda ação rápida (pista descoberta, NPC morreu, local revelado, desfecho de cena, entrega de handout) **gera um Event** automaticamente com a mesa e a data de jogo corretas.
+- **Nota rápida (atalho `N`)** vira um Event do tipo "nota" vinculado à entidade em foco.
+- Testes: aplicação de cada `Effect` e `recordEvent` (total: **32**).
+
 ### ⏳ Pendente (próximas fases)
-- **Fase 3:** handouts, cartões de cena editáveis, diário, modo sessão, ações rápidas → eventos
-- **Fase 4:** relógios, "Avançar tempo", regra dos três, grafo e matriz de cruzamentos, múltiplas mesas
+- **Fase 4:** relógios ("Avançar tempo" + beats), regra dos três, grafo e matriz de cruzamentos, múltiplas mesas
 - **Fase 7:** Sessão 0 (roteiro, lore, rumores, tom, criação de investigadores, vínculos, cobertura)
 - **Fase 5:** Visão do Jogador, busca global, exportar/importar mundo (backup)
 - **Fase 6:** Importador (Cidade/Cenário), reconciliação, pacotes de exemplo, prompts

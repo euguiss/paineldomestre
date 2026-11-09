@@ -18,6 +18,9 @@ interface UiState {
   /** Currently selected location (opens the dossier panel). */
   selectedLocationId: string | null;
 
+  /** Entity in focus for the quick-note shortcut (N): id + human label. */
+  focusedEntity: { id: string; label: string } | null;
+
   theme: 'dark' | 'light';
 
   setActiveTableId: (id: string | null) => void;
@@ -26,6 +29,7 @@ interface UiState {
   setVisit: (v: VisitKind) => void;
   setActiveSessionId: (id: string | null) => void;
   selectLocation: (id: string | null) => void;
+  setFocusedEntity: (e: { id: string; label: string } | null) => void;
   toggleTheme: () => void;
 }
 
@@ -36,6 +40,7 @@ export const useUiStore = create<UiState>((set) => ({
   visit: 'primeiraVisita',
   activeSessionId: null,
   selectedLocationId: null,
+  focusedEntity: null,
   theme: 'dark',
 
   setActiveTableId: (id) => set({ activeTableId: id }),
@@ -43,7 +48,8 @@ export const useUiStore = create<UiState>((set) => ({
   setWeather: (w) => set({ weather: w }),
   setVisit: (v) => set({ visit: v }),
   setActiveSessionId: (id) => set({ activeSessionId: id }),
-  selectLocation: (id) => set({ selectedLocationId: id }),
+  selectLocation: (id) => set({ selectedLocationId: id, focusedEntity: id ? { id, label: 'local' } : null }),
+  setFocusedEntity: (e) => set({ focusedEntity: e }),
   toggleTheme: () =>
     set((s) => {
       const next = s.theme === 'dark' ? 'light' : 'dark';
